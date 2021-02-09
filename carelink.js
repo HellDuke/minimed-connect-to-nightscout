@@ -213,14 +213,17 @@ var Client = exports.Client = function (options) {
     async function refreshTokenEu() {
         logger.log('Refresh EU token');
 
-        return await axiosInstance
-            .post(CARELINKEU_REFRESH_TOKEN_URL)
-            .then(response => {
-                axiosInstance.defaults.headers.common = {
-                    'Authorization': `Bearer ${_.get(getCookie(CARELINKEU_TOKEN_COOKIE), 'value', '')}`,
-                    'Cookie': ''
-                };
-            })
+        return await axios.post(
+            CARELINKEU_REFRESH_TOKEN_URL,
+            {},
+            {
+                headers: {
+                    Authorization: "Bearer " + _.get(getCookie(CARELINKEU_TOKEN_COOKIE), 'value', ''),
+                    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0",
+                    Cookie: ''
+                },
+            },
+        )
             .catch(async function (error) {
                 console.error(`[MMConnect] Refresh EU token failed (${error})`);
                 deleteCookies();
